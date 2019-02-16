@@ -50,11 +50,13 @@ void PCA9685::reset()
   wiringPiI2CWriteReg16(fd, PCA9685_ALL_LED_ON_L + 2, 0x1000);
 }
 
-int *PCA9685::getPWM(int pin)
+int PCA9685::getPWMOn(int pin)
 {
-  int pwm[2];
   int reg = PIN(pin);
-  pwm[0] = wiringPiI2CReadReg16(fd, reg);
-  pwm[1] = wiringPiI2CReadReg16(fd, reg + 2);
-  return pwm;
+  return wiringPiI2CReadReg16(fd, reg);;
+}
+int PCA9685::getPWMOff(int pin)
+{
+  int reg = PIN(pin);
+  return wiringPiI2CReadReg16(fd, reg + 2);;
 }
