@@ -1,5 +1,6 @@
-#include "pid.hpp"
 #include <iostream>
+#include "pid.hpp"
+
 int main()
 {
     PID controller = PID(1, 0, 0);

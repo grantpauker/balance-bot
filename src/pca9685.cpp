@@ -1,5 +1,6 @@
-// #include <wiringPi.h>
-// #include <wiringPiI2C.h>
+#include <wiringPi.h>
+#include <wiringPiI2C.h>
+
 #include "pca9685.hpp"
 
 PCA9685::PCA9685(float freq)
@@ -7,7 +8,7 @@ PCA9685::PCA9685(float freq)
   fd = wiringPiI2CSetup(PCA9685_I2C_ADDRESS);
   if (freq > 0)
   {
-    setPWMFreq(freq)
+    setPWMFreq(freq);
   }
 }
 
