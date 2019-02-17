@@ -16,8 +16,7 @@ public:
   void setPWMFreq(int);
   void setPWM(int, int, int);
   void setPWM(int, int);
-  int getPWMOn(int);
-  int getPWMOff(int);
+  void getPWM(int, int *, int *);
 
   void reset();
 

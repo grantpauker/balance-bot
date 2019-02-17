@@ -6,6 +6,10 @@
 PCA9685::PCA9685(float freq)
 {
   fd = wiringPiI2CSetup(PCA9685_I2C_ADDRESS);
+  if (fd > 0)
+  {
+    printf("Error: fd = %i", fd);
+  }
   if (freq > 0)
   {
     setPWMFreq(freq);
@@ -27,7 +31,7 @@ void PCA9685::setPWMFreq(int freq)
   wiringPiI2CWriteReg8(fd, PCA9685_PRESCALE, prescale);
   wiringPiI2CWriteReg8(fd, PCA9685_MODE1, wake);
 
-  delay(1);
+  delay(5);
   wiringPiI2CWriteReg8(fd, PCA9685_MODE1, restart);
 }
 
@@ -44,19 +48,13 @@ void PCA9685::setPWM(int on, int off)
   wiringPiI2CWriteReg16(fd, PCA9685_ALL_LED_ON_L + 2, off & 0x0FFF);
 }
 
+void PCA9685::getPWM(int pin, int *on, int *off)
+{
+  on = wiringPiI2CReadReg16(fd, reg);
+  off = wiringPiI2CReadReg16(fd, reg + 2);
+}
 void PCA9685::reset()
 {
   wiringPiI2CWriteReg16(fd, PCA9685_ALL_LED_ON_L, 0x0);
   wiringPiI2CWriteReg16(fd, PCA9685_ALL_LED_ON_L + 2, 0x1000);
-}
-
-int PCA9685::getPWMOn(int pin)
-{
-  int reg = PIN(pin);
-  return wiringPiI2CReadReg16(fd, reg);;
-}
-int PCA9685::getPWMOff(int pin)
-{
-  int reg = PIN(pin);
-  return wiringPiI2CReadReg16(fd, reg + 2);;
 }
