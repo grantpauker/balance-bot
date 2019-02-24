@@ -3,7 +3,8 @@
 #include <algorithm>
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
-#include <bno055.hpp>
+#include "bno055.hpp"
+
 BNO055::BNO055()
 {
     fd = wiringPiI2CSetup(BNO055_ADDRESS_A);
