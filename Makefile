@@ -13,6 +13,6 @@ debug: CXXFLAGS += -g
 debug: all
 
 clean: 
-	-rm -f src/*.o
-	-rm -f src/*.gch
+	-rm -f *.o
+	-rm -f *.gch
 	-rm -f a.out
