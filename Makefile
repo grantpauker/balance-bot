@@ -1,7 +1,7 @@
 .PHONY: clean install uninstall
 
 CC=g++
-CXXFLAGS=
+CXXFLAGS=-lwiringPi
 PREFIX=~
 
 all: src/*.o
@@ -13,6 +13,6 @@ debug: CXXFLAGS += -g
 debug: all
 
 clean: 
-	-rm src/*.o
-	-rm src/*.gch
-	-rm a.out
+	-rm -f src/*.o
+	-rm -f src/*.gch
+	-rm -f a.out
