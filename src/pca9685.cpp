@@ -1,3 +1,4 @@
+#include <iostream>
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
 
@@ -8,7 +9,7 @@ PCA9685::PCA9685(float freq)
   fd = wiringPiI2CSetup(PCA9685_I2C_ADDRESS);
   if (fd > 0)
   {
-    printf("Error: fd = %i", fd);
+    std::cout << "Error: fd = " << fd << "\n";
   }
   if (freq > 0)
   {
@@ -50,8 +51,9 @@ void PCA9685::setPWM(int on, int off)
 
 void PCA9685::getPWM(int pin, int *on, int *off)
 {
-  on = wiringPiI2CReadReg16(fd, reg);
-  off = wiringPiI2CReadReg16(fd, reg + 2);
+  int reg = PIN(pin);
+  *on = wiringPiI2CReadReg16(fd, reg);
+  *off = wiringPiI2CReadReg16(fd, reg + 2);
 }
 void PCA9685::reset()
 {
