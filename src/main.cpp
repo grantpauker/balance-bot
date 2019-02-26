@@ -3,36 +3,54 @@
 #include "pid.hpp"
 #include "pca9685.hpp"
 #include "bno055.hpp"
+#include "i2c.hpp"
+#include "l298n.hpp"
 
-#define LOG(a, b) std::cout << a << ": " << b << "\n"
+#define LOG(a, b) std::cout << a << ": " << b
+#define LOGN(a, b) std::cout << a << ": " << b << "\n"
+
+#define I2C_BUS_1 1
+#define I2C_BUS_2 1
+#define PWM_FREQ 50
+
+#define L_MOTOR_IN1 1
+#define L_MOTOR_IN2 2
+#define L_MOTOR_ENABLE 3
+
+#define R_MOTOR_IN1 4
+#define R_MOTOR_IN2 5
+#define R_MOTOR_ENABLE 6
+
+#define KP 1
+#define KI 0.001
+#define KD 0.0
+#define DT 2
 
 int main()
 {
-    BNO055 imu;
+    I2C i2c1(I2C_BUS_1);
+    I2C i2c2(I2C_BUS_2);
+    BNO055 imu(i2c1);
     assert(imu.init(OPERATION_MODE_NDOF));
     auto status = imu.getSystemStatus(true);
-    LOG("system status", status[0]);
-    LOG("self test result", status[0]);
+    LOGN("imu system status", status[0]);
+    LOGN("imu self test result", status[1]);
     if (status[0] == 0x01)
     {
-        LOG("system error", status[2]);
+        LOGN("imu system error", status[2]);
     }
-    auto rev = imu.getRevision();
-    LOG("software version", rev[0]);
-    LOG("bootloader version", rev[1]);
-    LOG("accelerometer id", rev[2]);
-    LOG("magnetometer id", rev[3]);
-    LOG("gyroscope id", rev[4]);
+    PCA9685 pwm_driver(i2c2, PWM_FREQ);
+    L298N left_motor(pwm_driver, L_MOTOR_ENABLE, L_MOTOR_IN1, L_MOTOR_IN2);
+    L298N right_motor(pwm_driver, R_MOTOR_ENABLE, R_MOTOR_IN1, R_MOTOR_IN2);
+    PID pid(KP, KI, KD);
+
     while (1)
     {
-        auto euler = imu.readEuler();
-        auto cal_status = imu.getCalibrationStatus();
-        LOG("yaw", euler[0]);
-        LOG("pitch", euler[1]);
-        LOG("roll", euler[2]);
-        LOG("sys calibration", cal_status[0]);
-        LOG("gyro calibration", cal_status[1]);
-        LOG("accel calibration", cal_status[2]);
-        LOG("mag calibration", cal_status[3]);
+        float pitch = imu.readEuler()[1];
+        float output = pid.calculate(DT, 0, pitch);
+        left_motor.setSpeed(output);
+        right_motor.setSpeed(output);
+        std::cout << pitch << "\t" << output << "\n";
+        I2C::delay(DT);
     }
 }
