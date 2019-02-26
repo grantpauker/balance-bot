@@ -4,6 +4,8 @@
 #include <array>
 #include <vector>
 
+#include "i2c.hpp"
+
 // I2C addresses
 #define BNO055_ADDRESS_A 0x28
 #define BNO055_ADDRESS_B 0x29
@@ -186,7 +188,7 @@
 class BNO055
 {
 public:
-  BNO055();
+  BNO055(I2C);
   bool init(int);
   void setMode(int);
   std::array<int, 5> getRevision();
@@ -197,26 +199,22 @@ public:
   void setCalibration(std::array<int, 22>);
   std::array<int, 6> getAxisRemap();
   void setAxisRemap(int, int, int, int, int, int);
-  std::array<int, 3> readEuler();
-  std::array<int, 3> readMagnetometer();
-  std::array<int, 3> readGyroscope();
-  std::array<int, 3> readAccelerometer();
-  std::array<int, 3> readLinearAcceleration();
-  std::array<int, 3> readGravity();
-  std::array<int, 4> readQuaternion();
+  std::array<float, 3> readEuler();
+  std::array<float, 3> readMagnetometer();
+  std::array<float, 3> readGyroscope();
+  std::array<float, 3> readAccelerometer();
+  std::array<float, 3> readLinearAcceleration();
+  std::array<float, 3> readGravity();
+  std::array<float, 4> readQuaternion();
   int readTemp();
 
 private:
-  int fd;
+  I2C i2c;
   int mode;
   void configMode();
   void operationMode();
   std::vector<int> readVector(int, int);
-  void writeByte(int, int);
-  int readByte(int);
   int readSignedByte(int);
-  void writeBytes(int, std::vector<int>);
-  std::vector<int> readBytes(int, int);
 };
 
 #endif
