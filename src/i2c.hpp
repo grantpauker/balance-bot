@@ -5,7 +5,8 @@ class I2C
 {
   public:
 	I2C(int);
-	void init(int);
+	void enable(int);
+	int getEnabled();
 	int read();
 	int write(int);
 	int readByte(int);
@@ -19,5 +20,6 @@ class I2C
 
   private:
 	int fd;
+	int addr = 0;
 };
 #endif

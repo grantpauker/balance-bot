@@ -6,7 +6,7 @@
 
 PCA9685::PCA9685(I2C i2c, float freq) : i2c(i2c)
 {
-    i2c.init(PCA9685_I2C_ADDRESS);
+    i2c.enable(PCA9685_ADDRESS);
     if (freq > 0)
     {
         setPWMFreq(freq);
@@ -35,8 +35,10 @@ void PCA9685::setPWMFreq(int freq)
 void PCA9685::setPWM(int pin, int on, int off)
 {
     int reg = PIN(pin);
-    i2c.writeByte(reg, on & 0x0FFF);
-    i2c.writeByte(reg + 2, off & 0x0FFF);
+    i2c.writeByte(reg, on & 0xFF);
+    i2c.writeByte(reg + 1, on >> 8);
+    i2c.writeByte(reg + 2, off & 0xFF);
+    i2c.writeByte(reg + 3, off >> 8);
 }
 
 void PCA9685::setPWM(int pin, int val)
@@ -62,7 +64,9 @@ std::array<int, 2> PCA9685::getPWM(int pin)
     int reg = PIN(pin);
     std::array<int, 2> ret;
     ret[0] = i2c.readByte(reg);
+    ret[0] |= i2c.readByte(reg + 1) << 8;
     ret[1] = i2c.readByte(reg + 2);
+    ret[1] |= i2c.readByte(reg + 3) << 8;
     return ret;
 }
 

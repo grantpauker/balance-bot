@@ -4,7 +4,6 @@
 #include <string>
 #include <time.h>
 #include "i2c-dev.h"
-
 #include "i2c.hpp"
 
 I2C::I2C(int file)
@@ -17,12 +16,21 @@ I2C::I2C(int file)
 	}
 }
 
-void I2C::init(int addr)
+void I2C::enable(int _addr)
 {
-	if (ioctl(fd, I2C_SLAVE, addr) < 0)
+	if (_addr != addr)
 	{
-		std::cout << "Failed to access slave.\n";
+		addr = _addr;
+		if (ioctl(fd, I2C_SLAVE, addr) < 0)
+		{
+			std::cout << "Failed to access slave.\n";
+		}
 	}
+}
+
+int I2C::getEnabled()
+{
+	return addr;
 }
 
 int I2C::read()
