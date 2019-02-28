@@ -17,7 +17,7 @@ int BNO055::readSignedByte(int reg)
 
 bool BNO055::init(int _mode)
 {
-    i2c.init(BNO055_ADDRESS_A);
+    i2c.enable(BNO055_ADDRESS_A);
     mode = _mode;
     i2c.writeByte(BNO055_PAGE_ID_ADDR, 0);
     configMode();
