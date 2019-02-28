@@ -4,7 +4,7 @@
 #include <array>
 #include "i2c.hpp"
 
-#define PCA9685_I2C_ADDRESS 0x40
+#define PCA9685_ADDRESS 0x40
 #define PCA9685_MODE1 0x00
 #define PCA9685_PRESCALE 0xFE
 #define PCA9685_LED0_ON_L 0x6
