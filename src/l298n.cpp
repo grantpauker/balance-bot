@@ -1,9 +1,10 @@
 #include <wiringPi.h>
 #include "l298n.hpp"
 #include "pca9685.hpp"
+
 L298N::L298N(PCA9685 pca, int pin_enable, int pin_in1, int pin_in2) : pca(pca), pin_enable(pin_enable), pin_in1(pin_in1), pin_in2(pin_in2)
 {
-	wiringPiSetupPhys();
+	wiringPiSetup();
 	pinMode(pin_in1, OUTPUT);
 	pinMode(pin_in2, OUTPUT);
 }
@@ -27,10 +28,10 @@ void L298N::setSpeed(int speed)
 	{
 		in1_val = LOW;
 		in2_val = LOW;
-		speed = 4096;
+		speed = 0;
 	}
-	digitalWrite(pin_in1, pin_in1);
-	digitalWrite(pin_in2, pin_in2);
+	digitalWrite(pin_in1, in1_val);
+	digitalWrite(pin_in2, in2_val);
 	pca.setPWM(pin_enable, speed);
 }
 
